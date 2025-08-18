@@ -494,6 +494,23 @@ class DailyTaskFragment : KotlinBaseFragment<FragmentDailyTaskBinding>(), Handle
             }
 
             Constant.STOP_DAILY_TASK_CODE -> stopExecuteTask(true)
+
+            Constant.SHOW_DAILY_TASK_CODE -> {
+                val statusMessage = "任务状态：${if (isTaskStarted) "运行中" else "已停止"}\n任务列表:\n"
+                val taskListString = StringBuilder()
+                if (taskBeans.isEmpty()) {
+                    taskListString.append("当前没有任务。\n")
+                } else {
+                    taskBeans.forEachIndexed { index, task ->
+                        taskListString.append("${index + 1}. ${task.time}\n")
+                    }
+                }
+
+                val emailContent = statusMessage + taskListString.toString()
+                emailContent.sendEmail(
+                    requireContext(), "状态查询结果", false
+                )
+            }
         }
         return true
     }

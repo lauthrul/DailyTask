@@ -75,12 +75,12 @@ fun String.sendEmail(context: Context, title: String?, isTest: Boolean) {
     val mailContent = if (this == "") {
         "未监听到打卡成功的通知，请手动登录检查" + System.currentTimeMillis().timestampToDate()
     } else {
-        "${this}，版本号：${BuildConfig.VERSION_NAME}"
+        "${this}\n（当前版本：${BuildConfig.VERSION_NAME}"
     }
     val capacity = context.getSystemService<BatteryManager>()?.getIntProperty(
         BatteryManager.BATTERY_PROPERTY_CAPACITY
     )
-    mime.setText("${mailContent}，当前手机剩余电量为：${capacity}%")
+    mime.setText("${mailContent}，剩余电量：${capacity}%）")
     Thread {
         try {
             Transport.send(mime)

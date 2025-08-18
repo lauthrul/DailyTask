@@ -82,6 +82,8 @@ class NotificationMonitorService : NotificationListenerService() {
                 DailyTaskFragment.weakReferenceHandler?.sendEmptyMessage(Constant.START_DAILY_TASK_CODE)
             } else if (notice.contains("停止")) {
                 DailyTaskFragment.weakReferenceHandler?.sendEmptyMessage(Constant.STOP_DAILY_TASK_CODE)
+            } else if (notice.contains("状态")) {
+                DailyTaskFragment.weakReferenceHandler?.sendEmptyMessage(Constant.SHOW_DAILY_TASK_CODE)
             } else {
                 val key = SaveKeyValues.getValue(Constant.TASK_NAME_KEY, "打卡") as String
                 if (notice.contains(key)) {
