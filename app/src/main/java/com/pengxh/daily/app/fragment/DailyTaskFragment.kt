@@ -64,7 +64,7 @@ class DailyTaskFragment : KotlinBaseFragment<FragmentDailyTaskBinding>(), Handle
         var weakReferenceHandler: WeakReferenceHandler? = null
     }
 
-    private val kTag = "DailyTaskFragment"
+    private val kTag = "DailyTask.DailyTaskFragment"
     private val marginOffset by lazy { 16.dp2px(requireContext()) }
     private val gson by lazy { Gson() }
     private val repeatTaskHandler = Handler(Looper.getMainLooper())
@@ -154,6 +154,16 @@ class DailyTaskFragment : KotlinBaseFragment<FragmentDailyTaskBinding>(), Handle
                 }
             }
         }
+        Log.d(kTag, "initOnCreate: 初始化成功")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // 关键修复：在视图销毁时移除所有回调
+        repeatTaskHandler.removeCallbacks(repeatTaskRunnable)
+        dailyTaskHandler.removeCallbacks(dailyTaskRunnable)
+        timeoutTimer?.cancel()
+        Log.d(kTag, "onDestroyView: 已移除所有任务回调")
     }
 
     /**
@@ -381,22 +391,24 @@ class DailyTaskFragment : KotlinBaseFragment<FragmentDailyTaskBinding>(), Handle
      * */
     private val repeatTaskRunnable = object : Runnable {
         override fun run() {
-            val currentDiffSeconds = diffSeconds.decrementAndGet()
-            if (currentDiffSeconds > 0) {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    binding.repeatTimeView.text = String.format(
-                        Locale.getDefault(), "%s后刷新每日任务", currentDiffSeconds.formatTime()
-                    )
+            if (isAdded && view != null) {
+                val currentDiffSeconds = diffSeconds.decrementAndGet()
+                if (currentDiffSeconds > 0) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        binding.repeatTimeView.text = String.format(
+                            Locale.getDefault(), "%s后刷新每日任务", currentDiffSeconds.formatTime()
+                        )
+                    }
+                    repeatTaskHandler.postDelayed(this, 1000)
+                } else {
+                    // 刷新任务，并重启repeatTaskRunnable
+                    diffSeconds.set(TimeKit.getResetTaskSeconds())
+                    // 确保移除旧的回调
+                    repeatTaskHandler.removeCallbacks(this)
+                    repeatTaskHandler.post(this)
+                    Log.d(kTag, "run: 零点，刷新任务，并重新执行repeatTaskRunnable")
+                    executeDailyTask()
                 }
-                repeatTaskHandler.postDelayed(this, 1000)
-            } else {
-                // 刷新任务，并重启repeatTaskRunnable
-                diffSeconds.set(TimeKit.getResetTaskSeconds())
-                // 确保移除旧的回调
-                repeatTaskHandler.removeCallbacks(this)
-                repeatTaskHandler.post(this)
-                Log.d(kTag, "run: 零点，刷新任务，并重新执行repeatTaskRunnable")
-                executeDailyTask()
             }
         }
     }

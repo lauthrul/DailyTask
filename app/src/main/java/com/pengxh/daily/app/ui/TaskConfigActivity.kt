@@ -21,7 +21,7 @@ import com.pengxh.kt.lite.widget.dialog.BottomActionSheet
 
 class TaskConfigActivity : KotlinBaseActivity<ActivityTaskConfigBinding>() {
 
-    private val kTag = "TaskConfigActivity"
+    private val kTag = "DailyTask.TaskConfigActivity"
     private val context = this
     private val hourArray = arrayListOf("0", "1", "2", "3", "4", "5", "6", "自定义（单位：时）")
     private val timeArray = arrayListOf("15s", "30s", "45s", "自定义（单位：秒）")

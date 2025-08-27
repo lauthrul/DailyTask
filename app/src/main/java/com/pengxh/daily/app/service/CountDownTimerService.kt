@@ -18,7 +18,7 @@ import com.pengxh.daily.app.extensions.openApplication
  * */
 class CountDownTimerService : Service() {
 
-    private val kTag = "CountDownTimerService"
+    private val kTag = "DailyTask.CountDownTimerService"
     private val binder by lazy { LocaleBinder() }
     private val notificationManager by lazy { getSystemService(NOTIFICATION_SERVICE) as NotificationManager }
     private val notificationBuilder by lazy {

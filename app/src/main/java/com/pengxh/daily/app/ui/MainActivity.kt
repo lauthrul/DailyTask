@@ -37,7 +37,7 @@ import java.util.Random
 
 class MainActivity : KotlinBaseActivity<ActivityMainBinding>() {
 
-    private val kTag = "MainActivity"
+    private val kTag = "DailyTask.MainActivity"
     private val fragmentPages = ArrayList<Fragment>()
     private val clockAnimationHandler = Handler(Looper.getMainLooper())
     private var menuItem: MenuItem? = null

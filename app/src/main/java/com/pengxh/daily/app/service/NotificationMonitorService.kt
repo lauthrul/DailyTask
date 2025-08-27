@@ -25,7 +25,7 @@ import com.pengxh.kt.lite.utils.SaveKeyValues
  */
 class NotificationMonitorService : NotificationListenerService() {
 
-    private val kTag = "MonitorService"
+    private val kTag = "DailyTask.MonitorService"
     private val batteryManager by lazy { getSystemService(BATTERY_SERVICE) as BatteryManager }
 
     /**
@@ -54,6 +54,7 @@ class NotificationMonitorService : NotificationListenerService() {
 
         // 保存指定包名的通知，其他的一律不保存
         if (pkg == Constant.DING_DING || pkg == Constant.WECHAT || pkg == Constant.WEWORK || pkg == Constant.QQ || pkg == Constant.TIM || pkg == Constant.ZFB) {
+            Log.d(kTag, "收到${pkg}通知: [${title}] $notice")
             NotificationBean().apply {
                 packageName = pkg
                 notificationTitle = title
@@ -73,6 +74,7 @@ class NotificationMonitorService : NotificationListenerService() {
 
         // 其他消息指令
         if (pkg == Constant.WECHAT || pkg == Constant.WEWORK || pkg == Constant.QQ || pkg == Constant.TIM || pkg == Constant.ZFB) {
+            Log.d(kTag, "DailyTaskFragment.weakReferenceHandler: ${DailyTaskFragment.weakReferenceHandler}")
             if (notice.contains("电量")) {
                 val capacity = batteryManager.getIntProperty(
                     BatteryManager.BATTERY_PROPERTY_CAPACITY
